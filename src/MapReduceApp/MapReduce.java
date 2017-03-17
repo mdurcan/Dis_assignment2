@@ -1,20 +1,39 @@
 package MapReduceApp;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 
 public class MapReduce {
 
-	public static void main(String[] args) {
-
+	public static void main(String[] args) throws Exception {
+		
+		// missing needed arguments
+		if(args.length<4){
+			System.out.println("missing arguments");
+			return;
+		}
+		
+		// part 1: takes in list of files
+		File folder = null;
+		
+		if(args[0].equalsIgnoreCase("-files")){
+			folder = new File(args[1]);
+			if(!folder.exists()){
+				System.out.println("file dosent exist");
+				return;
+			}
+		}
+		
+		// use function to get all files
 		Map<String, String> input = new HashMap<String, String>();
-		input.put("file1.txt", "foo foo bar cat dog dog");
-		input.put("file2.txt", "foo house cat cat dog");
-		input.put("file3.txt", "foo foo foo bird");
+		GetFiles(folder,input);
 
 		// APPROACH #1: Brute force
 		{
@@ -225,7 +244,7 @@ public class MapReduce {
 		String[] words = contents.trim().split("\\s+");
 		List<MappedItem> results = new ArrayList<MappedItem>(words.length);
 		for (String word : words) {
-			results.add(new MappedItem(word, file));
+			results.add(new MappedItem(word.substring(0, 1), file));
 		}
 		callback.mapDone(file, results);
 	}
@@ -270,6 +289,30 @@ public class MapReduce {
 		@Override
 		public String toString() {
 			return "[\"" + word + "\",\"" + file + "\"]";
+		}
+	}
+	
+	//function for part 1
+	private static void GetFiles(File Dir, Map<String,String> input) throws FileNotFoundException{
+		//gets files in directory 
+		File[] fileList =Dir.listFiles(); 
+		
+		// goes through each file
+		for(File file : fileList){
+			
+			// if its a sub directory 
+			if(!file.isFile()){
+				// goes through its files
+				GetFiles(file,input);
+				continue;
+			}
+			
+			//read contents of file
+			Scanner read = new Scanner(file);
+			String contents = read.useDelimiter("\\Z").next();
+			
+			//add file and contents 
+			input.put(file.getName(),contents);
 		}
 	}
 }
