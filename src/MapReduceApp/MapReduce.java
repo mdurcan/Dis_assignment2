@@ -70,7 +70,7 @@ public class MapReduce {
 
 		// APPROACH #2: MapReduce
 		{
-			Map<String, Map<String, Integer>> output = new HashMap<String, Map<String, Integer>>();
+			Map<String, Map<String, Integer>> output = new HashMap<String, Map<String, Integer>>(); // map interface implemented as HashMap..??
 
 			// MAP:
 
