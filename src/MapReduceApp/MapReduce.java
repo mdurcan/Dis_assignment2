@@ -244,7 +244,7 @@ public class MapReduce {
 		String[] words = contents.trim().split("\\s+");
 		List<MappedItem> results = new ArrayList<MappedItem>(words.length);
 		for (String word : words) {
-			results.add(new MappedItem(word.substring(0, 1), file));
+			results.add(new MappedItem(word.substring(0, 1), file));//edit to make it only save the first letter
 		}
 		callback.mapDone(file, results);
 	}
